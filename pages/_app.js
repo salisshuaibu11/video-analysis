@@ -1,7 +1,21 @@
-import '../styles/globals.css'
+import { ChakraProvider, extendTheme } from "@chakra-ui/react"
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+const colors = {
+  brand: {
+    900: "#1a365d",
+    800: "#153e75",
+    700: "#2a69ac",
+  },
 }
 
-export default MyApp
+const theme = extendTheme({ colors })
+
+function App({ Component }) {
+  return (
+    <ChakraProvider resetCss theme={theme}>
+      <Component />
+    </ChakraProvider>
+  )
+}
+
+export default App;
