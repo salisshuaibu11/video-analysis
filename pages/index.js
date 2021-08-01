@@ -1,5 +1,3 @@
-import Head from 'next/head'
-import Header from "../components/Header";
 import {
   Input,
   InputGroup,
@@ -12,10 +10,13 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
+import Head from 'next/head'
+import Header from "../components/Header";
+import ProtectedPage from "../components/ProtectedPage";
+
 export default function Home() {
   return (
-    <>
-      <Header />
+    <ProtectedPage>
       <Container maxWidth="1200px">
         <Box marginBottom="1rem">
           <InputGroup marginBottom="2rem">
@@ -40,6 +41,6 @@ export default function Home() {
           </Box>
         </SimpleGrid>
       </Container>
-    </>
+    </ProtectedPage>
   )
 }
