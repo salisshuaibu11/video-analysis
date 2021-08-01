@@ -14,11 +14,14 @@ import {
 import Head from 'next/head'
 import Header from "../components/Header";
 import ProtectedPage from "../components/ProtectedPage";
-import { useAuth } from "../hooks";
+import { useAuth, useInterval } from "../hooks";
 
 export default function Home() {
   const [file, setFile] = useState("");
   const [videoSrc, setVideoSrc] = useState("");
+  const [conversationId, setConversationId] = useState(null);
+  const [jobId, setJobId] = useState(null);
+  const [status, setStatus] = useState("not started");
 
   const videoRef = useRef(null);
   const {token} = useAuth();
@@ -35,8 +38,21 @@ export default function Home() {
     .then((rawResult) => rawResult.json())
     .then((result) => {
       console.log(result);
+      setConversationId(result.conversationId);
+      setJobId(result.jobId);
     })
   }
+
+  useInterval(() => {
+    fetch(`https://api.symbl.ai/v1/job/${jobId}`, {
+      method: "GET",
+      headers: {
+        'x-api-key': token,
+      }
+    })
+    .then((rawResult) => rawResult.json())
+    .then((result) => setStatus(result.status));
+  }, 1000, status === 'completed' || !jobId);
 
   useEffect(() => {
     const src = URL.createObjectURL(new Blob([file], {type: "video/mp4"}));
