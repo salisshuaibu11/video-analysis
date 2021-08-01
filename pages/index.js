@@ -1,3 +1,4 @@
+import {useState, useEffect, useRef} from "react";
 import {
   Input,
   InputGroup,
@@ -15,19 +16,34 @@ import Header from "../components/Header";
 import ProtectedPage from "../components/ProtectedPage";
 
 export default function Home() {
+  const [file, setFile] = useState("");
+  const [videoSrc, setVideoSrc] = useState("");
+
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const src = URL.createObjectURL(new Blob([file], {type: "video/mp4"}));
+    setVideoSrc(src);
+  }, [file]);
   return (
     <ProtectedPage>
       <Container maxWidth="1200px">
         <Box marginBottom="1rem">
           <InputGroup marginBottom="2rem">
-            <Input type="file" id="input" accept="video/*" />
+            <Input
+              type="file"
+              id="input"
+              accept="video/*"
+              ref={videoRef}
+              onChange={(e) => setFile(e.target.files[0])}
+            />
           </InputGroup>
           <Box bg="lightgrey" marginBottom="1rem">
-            <AspectRatio maxH="400px" ratio={16/9}>
-              <div>Video Component</div>
+            <AspectRatio maxH="100%" ratio={16/9}>
+              <video id="video-summary" controls src={videoSrc}/>
             </AspectRatio>
           </Box>
-          <Button>Send for proccessing</Button>
+          <Button colorScheme="teal" onClick={() => console.log("Submit file for proccessing")}>Send for proccessing</Button>
         </Box>
         <Divider orientation="horizontal" />
         <Heading>Proccessing Data</Heading>
