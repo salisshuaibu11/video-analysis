@@ -9,6 +9,10 @@ import {
   Divider,
   Button,
   Heading,
+  Badge,
+  List,
+  ListItem,
+  Text,
 } from "@chakra-ui/react";
 
 import Head from 'next/head'
@@ -22,9 +26,32 @@ export default function Home() {
   const [conversationId, setConversationId] = useState(null);
   const [jobId, setJobId] = useState(null);
   const [status, setStatus] = useState("not started");
+  const [messages, setMessages] = useState([]);
 
   const videoRef = useRef(null);
   const {token} = useAuth();
+
+  const getTranscripts = () => {
+    fetch(`https://api.symbl.ai/v1/conversations/${conversationId}/messages`, {
+      method: 'GET',
+      headers: {
+        'x-api-key': token,
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors'
+    })
+    .then((rawResult) => rawResult.json())
+    .then((result) => setMessages(result.messages));
+  }
+
+  useEffect(() => {
+    if (status === "completed") {
+      getTranscripts();
+    }
+  }, [status])
+
+  console.log(messages);
+
   const submitFileForProcessing = (file) => {
     fetch("https://api.symbl.ai/v1/process/video", {
       method: "POST",
@@ -86,6 +113,19 @@ export default function Home() {
               <Heading as="h4" size="md">
                 Transcript pulled from Conversation API
               </Heading>
+              <List spacing={3} margin="2rem">
+                {messages.map((message) => (
+                  <ListItem key={message.id}>
+                    <Container>
+                      <Text fontSize="lg">{message.text}</Text>
+                      {/*<Badge colorScheme="green">
+                        {`${new Date(message.startTime).toDateString()} ${new Date(message.startTime).toTimeString()}`}
+                      </Badge>
+                      */}
+                    </Container>
+                  </ListItem>
+                ))}
+              </List>
             </Container>
           </Box>
         </SimpleGrid>
