@@ -9,21 +9,21 @@ export default function ProtectedPage({ children }) {
   const isLoggedIn = token;
 
   async function loginToSymbl() {
-    const response = await fetch('https://api.symbl.ai/outh2/token:generate', {
+    const response = await fetch('https://api.symbl.ai/oauth2/token:generate', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      mode: "no-cors",
+      mode: "cors",
       body: JSON.stringify({
         type: "application",
         appId,
         appSecret
-      })
-    });
-    //const json = await response.json();
-    //setToken(json.accessToken);
-    console.log(response)
+      }),
+    })
+    const json = await response.json();
+    console.log("Access Token is: ", json);
+    setToken(json.accessToken);
   }
   return (
     <>
