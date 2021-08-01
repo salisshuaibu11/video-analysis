@@ -1,4 +1,5 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react"
+import { AuthProvider } from "../hooks";
 
 const colors = {
   brand: {
@@ -12,9 +13,11 @@ const theme = extendTheme({ colors })
 
 function App({ Component }) {
   return (
-    <ChakraProvider resetCss theme={theme}>
-      <Component />
-    </ChakraProvider>
+    <AuthProvider>
+      <ChakraProvider resetCss theme={theme}>
+        <Component />
+      </ChakraProvider>
+    </AuthProvider>
   )
 }
 

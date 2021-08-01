@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Container, Button, Input, Stack } from "@chakra-ui/react";
 import Header from "./Header";
+import { useAuth } from "../hooks";
 
 export default function ProtectedPage({ children }) {
-  const [token, setToken] = useState("");
+  const {token, setToken} = useAuth("");
   const [appId, setAppId] = useState("");
   const [appSecret, setAppSecret] = useState("");
   const isLoggedIn = token;
@@ -22,7 +23,6 @@ export default function ProtectedPage({ children }) {
       }),
     })
     const json = await response.json();
-    console.log("Access Token is: ", json);
     setToken(json.accessToken);
   }
   return (
