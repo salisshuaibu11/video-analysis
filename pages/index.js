@@ -14,12 +14,29 @@ import {
 import Head from 'next/head'
 import Header from "../components/Header";
 import ProtectedPage from "../components/ProtectedPage";
+import { useAuth } from "../hooks";
 
 export default function Home() {
   const [file, setFile] = useState("");
   const [videoSrc, setVideoSrc] = useState("");
 
   const videoRef = useRef(null);
+  const {token} = useAuth();
+  const submitFileForProcessing = (file) => {
+    fetch("https://api.symbl.ai/v1/process/video", {
+      method: "POST",
+      headers: {
+        'x-api-key': token,
+        'Content-Type': 'video/mp4'
+      },
+      body: file,
+      json: true
+    })
+    .then((rawResult) => rawResult.json())
+    .then((result) => {
+      console.log(result);
+    })
+  }
 
   useEffect(() => {
     const src = URL.createObjectURL(new Blob([file], {type: "video/mp4"}));
@@ -43,7 +60,7 @@ export default function Home() {
               <video id="video-summary" controls src={videoSrc}/>
             </AspectRatio>
           </Box>
-          <Button colorScheme="teal" onClick={() => console.log("Submit file for proccessing")}>Send for proccessing</Button>
+          <Button colorScheme="teal" onClick={() => submitFileForProcessing(file)}>Send for proccessing</Button>
         </Box>
         <Divider orientation="horizontal" />
         <Heading>Proccessing Data</Heading>
