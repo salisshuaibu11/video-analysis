@@ -27,9 +27,53 @@ export default function Home() {
   const [jobId, setJobId] = useState(null);
   const [status, setStatus] = useState("not started");
   const [messages, setMessages] = useState([]);
-
   const videoRef = useRef(null);
   const {token} = useAuth();
+
+  const getInsights = () => {
+    fetch(`https://api.symbl.ai/v1/conversations/${conversationId}/insights`, {
+      method: 'GET',
+      headers: {
+        'x-api-key': token,
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors'
+    })
+    .then((rawResult) => rawResult.json())
+    .then((result) => {
+      console.log("Insights", result);
+    });
+  }
+
+  const getQuestions = () => {
+    fetch(`https://api.symbl.ai/v1/conversations/${conversationId}/questions`, {
+      method: 'GET',
+      headers: {
+        'x-api-key': token,
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors'
+    })
+    .then((rawResult) => rawResult.json())
+    .then((result) => {
+      console.log("Questions", result);
+    });
+  }
+
+  const getFollowUps = () => {
+    fetch(`https://api.symbl.ai/v1/conversations/${conversationId}/follow-ups`, {
+      method: 'GET',
+      headers: {
+        'x-api-key': token,
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors'
+    })
+    .then((rawResult) => rawResult.json())
+    .then((result) => {
+      console.log("Follow Ups", result);
+    });
+  }
 
   const getTranscripts = () => {
     fetch(`https://api.symbl.ai/v1/conversations/${conversationId}/messages`, {
@@ -47,6 +91,9 @@ export default function Home() {
   useEffect(() => {
     if (status === "completed") {
       getTranscripts();
+      getInsights();
+      getQuestions();
+      getFollowUps();
     }
   }, [status])
 
